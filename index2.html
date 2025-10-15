@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVIA & AUTO Delivery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .delivery-section {
+            position: absolute;
+            width: 45%;
+            height: 70%;
+        }
+
+        .avia-section {
+            left: 2%;
+            top: 20%;
+        }
+
+        .auto-section {
+            right: 2%;
+            top: 20%;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .sky {
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to bottom, #87CEEB 0%, #b3d9ff 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .cloud1 {
+            width: 80px;
+            height: 30px;
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .cloud2 {
+            width: 100px;
+            height: 35px;
+            top: 35%;
+            right: 20%;
+            animation-delay: 2s;
+        }
+
+        .cloud3 {
+            width: 70px;
+            height: 25px;
+            top: 55%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .plane {
+            position: absolute;
+            width: 100px;
+            height: 50px;
+            top: 40%;
+            animation: flyPlane 12s infinite linear;
+            z-index: 10;
+        }
+
+        .plane-body {
+            width: 80px;
+            height: 25px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .plane-body::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #3498db;
+            border-radius: 50%;
+            top: 5px;
+            right: 10px;
+        }
+
+        .plane-wing {
+            width: 70px;
+            height: 10px;
+            background: #34495e;
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .plane-tail {
+            width: 0;
+            height: 0;
+            border-left: 20px solid #c0392b;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            position: absolute;
+            left: -5px;
+            top: 0;
+        }
+
+        @keyframes flyPlane {
+            0% {
+                left: -150px;
+            }
+
+            100% {
+                left: calc(100% + 150px);
+            }
+        }
+
+        .road {
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to bottom, #7f8c8d 0%, #95a5a6 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+        }
+
+        .road-marking {
+            position: absolute;
+            width: 100%;
+            height: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 20px,
+                    white 20px,
+                    white 60px);
+            animation: slideRoad 2s infinite linear;
+        }
+
+        @keyframes slideRoad {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 80px 0;
+            }
+        }
+
+        .truck {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            top: 35%;
+            animation: driveTruck 15s infinite linear;
+            z-index: 10;
+        }
+
+        .truck-cabin {
+            width: 45px;
+            height: 40px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 8px 8px 0 0;
+            position: absolute;
+            right: 0;
+            bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .truck-cabin::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            top: 5px;
+            left: 5px;
+            border-radius: 3px;
+        }
+
+        .truck-cargo {
+            width: 75px;
+            height: 45px;
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            position: absolute;
+            left: 0;
+            bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .truck-cargo::before {
+            content: '📦';
+            position: absolute;
+            font-size: 1.5em;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .truck-wheel {
+            width: 22px;
+            height: 22px;
+            background: radial-gradient(circle, #2c3e50 40%, #34495e 60%);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            border: 3px solid #1a252f;
+            animation: rotateWheel 0.5s infinite linear;
+        }
+
+        .wheel1 {
+            left: 15px;
+        }
+
+        .wheel2 {
+            left: 50px;
+        }
+
+        .wheel3 {
+            right: 10px;
+        }
+
+        @keyframes rotateWheel {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes driveTruck {
+            0% {
+                left: -150px;
+            }
+
+            100% {
+                left: calc(100% + 150px);
+            }
+        }
+
+        .package {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border: 3px solid #d35400;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .package::before {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 100%;
+            background: #d35400;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .package::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #d35400;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .avia-section .package {
+            top: 60%;
+            left: 50%;
+            animation: dropFromPlane 4s infinite ease-in;
+            animation-delay: 5s;
+        }
+
+        .auto-section .package {
+            bottom: 20%;
+            left: 50%;
+            animation: deliverByTruck 4s infinite ease-in;
+            animation-delay: 7s;
+        }
+
+        @keyframes dropFromPlane {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -200px) scale(0.5) rotate(0deg);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, 0px) scale(1) rotate(180deg);
+            }
+
+            40% {
+                transform: translate(-50%, 20px) scale(1) rotate(360deg);
+            }
+
+            60% {
+                transform: translate(-50%, 0px) scale(1) rotate(360deg);
+            }
+
+            80%,
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0px) scale(1) rotate(360deg);
+            }
+        }
+
+        @keyframes deliverByTruck {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 100px) scale(0) rotate(0deg);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, 0px) scale(1.2) rotate(180deg);
+            }
+
+            40% {
+                transform: translate(-50%, 0px) scale(1) rotate(360deg);
+            }
+
+            60%,
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0px) scale(1) rotate(360deg);
+            }
+        }
+
+        .destination {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #27ae60, #229954);
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+        }
+
+        .destination::before {
+            content: '🏠';
+        }
+
+        .stats {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 50px;
+            font-size: 1.1em;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">🚀 AVIA & AUTO Delivery System</h1>
+
+        <!-- AVIA Section -->
+        <div class="delivery-section avia-section">
+            <h2 class="section-title">✈️ AVIA Delivery</h2>
+            <div class="sky">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+
+                <div class="plane">
+                    <div class="plane-tail"></div>
+                    <div class="plane-body"></div>
+                    <div class="plane-wing"></div>
+                </div>
+
+                <div class="package"></div>
+            </div>
+            <div class="destination"></div>
+        </div>
+
+        <!-- AUTO Section -->
+        <div class="delivery-section auto-section">
+            <h2 class="section-title">🚚 AUTO Delivery</h2>
+            <div class="road">
+                <div class="road-marking"></div>
+
+                <div class="truck">
+                    <div class="truck-cargo"></div>
+                    <div class="truck-cabin"></div>
+                    <div class="truck-wheel wheel1"></div>
+                    <div class="truck-wheel wheel2"></div>
+                    <div class="truck-wheel wheel3"></div>
+                </div>
+
+                <div class="package"></div>
+            </div>
+            <div class="destination"></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-label">✈️ AVIA Speed</span>
+                    <span class="stat-value">850 km/h</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🚚 AUTO Speed</span>
+                    <span class="stat-value">80 km/h</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">📦 Active</span>
+                    <span class="stat-value" id="deliveryCount">24</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let count = 24;
+        setInterval(() => {
+            count = Math.floor(Math.random() * 20) + 20;
+            document.getElementById('deliveryCount').textContent = count;
+        }, 3000);
+    </script>
+</body>
+
+</html>
