@@ -91,7 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
     navToggle.style.display = "none"; // Add this line
     document.body.style.overflow = "hidden";
     document.body.classList.add("menu-open");
-
+    // Ensure menu is clickable
+    navMenu.style.pointerEvents = "auto";
     // Prevent background scrolling on mobile
     if (isMobile) {
       document.body.style.position = "fixed";
@@ -116,9 +117,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Close menu when clicking nav links
   navLinks.forEach((link) => {
-    link.addEventListener("click", function () {
+    link.addEventListener("click", function (e) {
+      const href = this.getAttribute("href");
+
+      // Don't prevent default for valid links
+      if (href && href.startsWith("#") && href !== "#" && href !== "#!") {
+        // Let the smooth scroll function handle it
+      } else {
+        // For other links, don't prevent default
+      }
+
       if (isMobile || isTablet) {
-        setTimeout(() => closeMenu(), 300); // Delay for smooth transition
+        setTimeout(() => closeMenu(), 100); // Reduced delay
       }
     });
   });
@@ -223,36 +233,47 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 100);
   }
 
-  // ==================== SMOOTH SCROLL - MOBILE OPTIMIZED ====================
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
       const href = this.getAttribute("href");
       if (href === "#" || href === "#!") return;
 
       e.preventDefault();
-      const target = document.querySelector(href);
 
-      if (target) {
-        const headerOffset = header
-          ? header.offsetHeight + (isMobile ? 10 : 20)
-          : isMobile
-          ? 80
-          : 100;
-        const elementPosition = target.getBoundingClientRect().top;
-        const offsetPosition =
-          elementPosition + window.pageYOffset - headerOffset;
-
-        // Use different scroll behavior for mobile
-        const scrollOptions = {
-          top: offsetPosition,
-          behavior: isMobile ? "auto" : "smooth", // Instant scroll on mobile for better performance
-        };
-
-        window.scrollTo(scrollOptions);
+      // Close mobile menu first on mobile
+      if (isMobile && navMenu && navMenu.classList.contains("active")) {
+        closeMenu();
+        // Wait for menu to close before scrolling
+        setTimeout(() => {
+          scrollToTarget(href);
+        }, 300);
+      } else {
+        scrollToTarget(href);
       }
     });
   });
 
+  // Helper function for scrolling
+  function scrollToTarget(href) {
+    const target = document.querySelector(href);
+    if (target) {
+      const headerOffset = header
+        ? header.offsetHeight + (isMobile ? 10 : 20)
+        : isMobile
+        ? 80
+        : 100;
+      const elementPosition = target.getBoundingClientRect().top;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerOffset;
+
+      const scrollOptions = {
+        top: offsetPosition,
+        behavior: isMobile ? "auto" : "smooth",
+      };
+
+      window.scrollTo(scrollOptions);
+    }
+  }
   // ==================== PRICING TABS ====================
   const tabButtons = document.querySelectorAll(".tab-btn");
   const tabContents = document.querySelectorAll(".tab-content");

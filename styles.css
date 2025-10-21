@@ -3,12 +3,12 @@
 /* ==================== CSS VARIABLES ==================== */
 :root {
   /* Logo-inspired color palette */
-  --primary-blue: #282847;
-  --primary-dark: #26313b;
-  --accent-orange: #aa3818;
-  --accent-orange-light: #ee5934;
+  --primary-blue: #0e1b2c;
+  --primary-dark: #1a2a43;
+  --accent-orange: #c2312c;
+  --accent-orange-light: #d8453f;
   --secondary-gray: #64748b;
-  --light-blue: #dbeafe;
+  --light-blue: #ffffff;
   --ultra-light-blue: #f0f9ff;
 
   /* Supporting colors */
@@ -759,7 +759,7 @@ button {
     padding: 100px 0 40px;
     overflow-y: auto;
     transition: var(--transition-slow);
-    z-index: 9998;
+    z-index: 10001; /* Change from 9998 to 10001 */
     display: block;
     margin: 0;
     border-left: 4px solid var(--accent-orange);
@@ -3655,7 +3655,6 @@ button {
 .footer-logo img {
   height: 52px;
   margin-bottom: 24px;
-  filter: brightness(0) invert(1);
 }
 
 .footer-col p {
