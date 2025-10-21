@@ -1,239 +1,4 @@
-// ==================== MODERN TESTIMONIALS CAROUSEL ====================
-const testimonialsTrack = document.getElementById("testimonialsTrack");
-const testimonialCards = document.querySelectorAll(".testimonial-card-modern");
-const prevControl = document.querySelector(".prev-control");
-const nextControl = document.querySelector(".next-control");
-const progressDots = document.querySelectorAll(".progress-dot");
-const carouselModern = document.querySelector(".testimonials-carousel-modern");
-
-if (testimonialCards.length > 0 && testimonialsTrack) {
-  let currentIndex = 0;
-  let autoplayInterval;
-  let isAutoplayPaused = true;
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
-
-  // Get cards per view based on screen size
-  function getCardsPerView() {
-    const width = window.innerWidth;
-    if (width >= 1200) return 3;
-    if (width >= 768) return 2;
-    return 1;
-  }
-
-  // Calculate max index
-  function getMaxIndex() {
-    const cardsPerView = getCardsPerView();
-    return Math.max(0, testimonialCards.length - cardsPerView);
-  }
-
-  // Update carousel position
-  function updateCarousel(smooth = true) {
-    const cardWidth = testimonialCards[0].offsetWidth;
-    const gap = 30;
-    const offset = currentIndex * (cardWidth + gap);
-
-    testimonialsTrack.style.transition = smooth
-      ? "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)"
-      : "none";
-    testimonialsTrack.style.transform = `translateX(-${offset}px)`;
-
-    // Update dots
-    progressDots.forEach((dot, index) => {
-      dot.classList.toggle("active", index === currentIndex);
-    });
-  }
-
-  // Navigate to specific index
-  function goToIndex(index) {
-    const maxIndex = getMaxIndex();
-    currentIndex = Math.max(0, Math.min(index, maxIndex));
-    updateCarousel();
-  }
-
-  // Next slide
-  function nextSlide() {
-    const maxIndex = getMaxIndex();
-    if (currentIndex < maxIndex) {
-      currentIndex++;
-    } else {
-      currentIndex = 0;
-    }
-    updateCarousel();
-  }
-
-  // Previous slide
-  function prevSlide() {
-    const maxIndex = getMaxIndex();
-    if (currentIndex > 0) {
-      currentIndex--;
-    } else {
-      currentIndex = maxIndex;
-    }
-    updateCarousel();
-  }
-
-  // Autoplay functions
-  function startAutoplay() {
-    if (!isAutoplayPaused) {
-      autoplayInterval = setInterval(nextSlide, 4000);
-    }
-  }
-
-  function stopAutoplay() {
-    clearInterval(autoplayInterval);
-  }
-
-  function resetAutoplay() {
-    stopAutoplay();
-    startAutoplay();
-  }
-
-  // Event listeners for controls
-  if (prevControl) {
-    prevControl.addEventListener("click", () => {
-      prevSlide();
-      resetAutoplay();
-    });
-  }
-
-  if (nextControl) {
-    nextControl.addEventListener("click", () => {
-      nextSlide();
-      resetAutoplay();
-    });
-  }
-
-  // Event listeners for progress dots
-  progressDots.forEach((dot) => {
-    dot.addEventListener("click", () => {
-      const index = parseInt(dot.getAttribute("data-index"));
-      goToIndex(index);
-      resetAutoplay();
-    });
-  });
-
-  // Hover to enable autoplay
-  if (carouselModern) {
-    carouselModern.addEventListener("mouseenter", () => {
-      isAutoplayPaused = false;
-      startAutoplay();
-    });
-
-    carouselModern.addEventListener("mouseleave", () => {
-      isAutoplayPaused = true;
-      stopAutoplay();
-    });
-  }
-
-  // Touch/Swipe support
-  if (testimonialsTrack) {
-    testimonialsTrack.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-        stopAutoplay();
-      },
-      { passive: true }
-    );
-
-    testimonialsTrack.addEventListener(
-      "touchmove",
-      (e) => {
-        if (!isDragging) return;
-        currentX = e.touches[0].clientX;
-      },
-      { passive: true }
-    );
-
-    testimonialsTrack.addEventListener("touchend", () => {
-      if (!isDragging) return;
-      isDragging = false;
-
-      const diff = startX - currentX;
-      const threshold = 50;
-
-      if (Math.abs(diff) > threshold) {
-        if (diff > 0) {
-          nextSlide();
-        } else {
-          prevSlide();
-        }
-      }
-
-      resetAutoplay();
-    });
-  }
-
-  // Mouse drag support (desktop)
-  let mouseStartX = 0;
-  let mouseCurrentX = 0;
-  let isMouseDragging = false;
-
-  testimonialsTrack.addEventListener("mousedown", (e) => {
-    mouseStartX = e.clientX;
-    isMouseDragging = true;
-    testimonialsTrack.style.cursor = "grabbing";
-    stopAutoplay();
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (!isMouseDragging) return;
-    mouseCurrentX = e.clientX;
-  });
-
-  document.addEventListener("mouseup", () => {
-    if (!isMouseDragging) return;
-    isMouseDragging = false;
-    testimonialsTrack.style.cursor = "grab";
-
-    const diff = mouseStartX - mouseCurrentX;
-    const threshold = 50;
-
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
-      }
-    }
-
-    resetAutoplay();
-  });
-
-  // Keyboard navigation
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") {
-      prevSlide();
-      resetAutoplay();
-    } else if (e.key === "ArrowRight") {
-      nextSlide();
-      resetAutoplay();
-    }
-  });
-
-  // Window resize handler
-  let resizeTimeout;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const maxIndex = getMaxIndex();
-      if (currentIndex > maxIndex) {
-        currentIndex = maxIndex;
-      }
-      updateCarousel(false);
-    }, 200);
-  });
-
-  // Initialize
-  updateCarousel(false);
-  progressDots[0]?.classList.add("active");
-
-  // Set cursor style
-  testimonialsTrack.style.cursor = "grab";
-} // ==================== ACTIVE CARGO - MAIN JAVASCRIPT ====================
+// ==================== ACTIVE CARGO - ENHANCED MAIN JAVASCRIPT ====================
 document.addEventListener("DOMContentLoaded", function () {
   // ==================== GLOBAL VARIABLES ====================
   const header = document.getElementById("header");
@@ -244,17 +9,35 @@ document.addEventListener("DOMContentLoaded", function () {
   const scrollProgress = document.getElementById("scrollProgress");
   const scrollTopBtn = document.getElementById("scrollTop");
 
+  // Mobile optimization variables
+  let isMobile = window.innerWidth <= 768;
+  let isTablet = window.innerWidth <= 992 && window.innerWidth > 768;
+  let lastScrollTime = 0;
+  const scrollThrottle = 16; // ~60fps
+
   // Create overlay element for mobile menu
   const overlay = document.createElement("div");
   overlay.className = "nav-overlay";
   document.body.appendChild(overlay);
 
+  // ==================== MOBILE DETECTION ====================
+  function updateDeviceType() {
+    const width = window.innerWidth;
+    isMobile = width <= 768;
+    isTablet = width <= 992 && width > 768;
+
+    // Add classes to body for CSS targeting
+    document.body.classList.toggle("is-mobile", isMobile);
+    document.body.classList.toggle("is-tablet", isTablet);
+    document.body.classList.toggle("is-desktop", !isMobile && !isTablet);
+  }
+
   // ==================== HERO SWIPER SLIDER ====================
   const heroSwiper = new Swiper(".heroSwiper", {
     loop: false,
-    speed: 1000,
-    autoplay: false, // Disabled autoplay
-    initialSlide: 0, // Start with first slide (AVIA)
+    speed: 800, // Reduced for mobile
+    autoplay: false,
+    initialSlide: 0,
     effect: "fade",
     fadeEffect: {
       crossFade: true,
@@ -270,6 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
       nextEl: ".swiper-button-next",
       prevEl: ".swiper-button-prev",
     },
+    // Mobile optimizations
+    touchRatio: isMobile ? 1 : 0.2,
+    threshold: isMobile ? 10 : 5,
     on: {
       init: function () {
         console.log("Hero Swiper initialized - AVIA slide shown by default");
@@ -279,13 +65,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ==================== MOBILE MENU TOGGLE ====================
   if (navToggle) {
-    navToggle.addEventListener("click", function () {
+    navToggle.addEventListener("click", function (e) {
+      e.preventDefault();
       openMenu();
     });
   }
 
   if (navClose) {
-    navClose.addEventListener("click", function () {
+    navClose.addEventListener("click", function (e) {
+      e.preventDefault();
       closeMenu();
     });
   }
@@ -300,62 +88,108 @@ document.addEventListener("DOMContentLoaded", function () {
     navMenu.classList.add("active");
     overlay.classList.add("active");
     navToggle.classList.add("active");
+    navToggle.style.display = "none"; // Add this line
     document.body.style.overflow = "hidden";
+    document.body.classList.add("menu-open");
+
+    // Prevent background scrolling on mobile
+    if (isMobile) {
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    }
   }
 
   function closeMenu() {
     navMenu.classList.remove("active");
     overlay.classList.remove("active");
     navToggle.classList.remove("active");
+    navToggle.style.display = "flex";
     document.body.style.overflow = "";
+    document.body.classList.remove("menu-open");
+
+    // Restore scrolling on mobile
+    if (isMobile) {
+      document.body.style.position = "";
+      document.body.style.width = "";
+    }
   }
 
   // Close menu when clicking nav links
   navLinks.forEach((link) => {
     link.addEventListener("click", function () {
-      if (window.innerWidth <= 992) {
-        closeMenu();
+      if (isMobile || isTablet) {
+        setTimeout(() => closeMenu(), 300); // Delay for smooth transition
       }
     });
   });
 
-  // ==================== STICKY HEADER & SCROLL EFFECTS ====================
+  // ==================== OPTIMIZED SCROLL EFFECTS ====================
   let lastScroll = 0;
+  let ticking = false;
 
-  window.addEventListener("scroll", function () {
+  // Throttled scroll function for better performance
+  function throttledScroll() {
+    const now = Date.now();
+    if (now - lastScrollTime < scrollThrottle) {
+      return;
+    }
+    lastScrollTime = now;
+
+    if (!ticking) {
+      requestAnimationFrame(updateScrollEffects);
+      ticking = true;
+    }
+  }
+
+  function updateScrollEffects() {
     const currentScroll = window.pageYOffset;
 
-    // Add scrolled class for style changes
-    if (currentScroll > 80) {
-      header.classList.add("scrolled");
+    // Header effects - reduced threshold for mobile
+    const headerThreshold = isMobile ? 50 : 80;
+    if (currentScroll > headerThreshold) {
+      header?.classList.add("scrolled");
     } else {
-      header.classList.remove("scrolled");
+      header?.classList.remove("scrolled");
     }
 
-    // Update scroll progress bar
-    updateScrollProgress();
+    // Update scroll progress - only if not mobile to reduce performance impact
+    if (!isMobile || document.body.classList.contains("show-progress")) {
+      updateScrollProgress();
+    }
 
-    // Update active navigation link
-    updateActiveLink();
+    // Update active navigation link - throttled
+    if (currentScroll !== lastScroll) {
+      updateActiveLink();
+    }
 
-    // Show/hide scroll to top button
-    if (currentScroll > 500) {
-      scrollTopBtn.classList.add("show");
+    // Show/hide scroll to top button - higher threshold for mobile
+    const scrollTopThreshold = isMobile ? 300 : 500;
+    if (currentScroll > scrollTopThreshold) {
+      scrollTopBtn?.classList.add("show");
     } else {
-      scrollTopBtn.classList.remove("show");
+      scrollTopBtn?.classList.remove("show");
     }
 
     lastScroll = currentScroll;
-  });
+    ticking = false;
+  }
+
+  // Add scroll listener with throttling
+  window.addEventListener("scroll", throttledScroll, { passive: true });
 
   // ==================== SCROLL PROGRESS BAR ====================
   function updateScrollProgress() {
+    // Skip on mobile if performance is poor
+    if (isMobile && window.DeviceMotionEvent) {
+      return;
+    }
+
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
     const height =
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
+    const scrolled = Math.min((winScroll / height) * 100, 100);
 
     if (scrollProgress) {
       scrollProgress.style.width = scrolled + "%";
@@ -364,45 +198,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ==================== ACTIVE NAV LINK ON SCROLL ====================
   const sections = document.querySelectorAll("section[id]");
+  let activeUpdateTimeout;
 
   function updateActiveLink() {
-    const scrollY = window.pageYOffset;
+    // Debounce for better performance
+    clearTimeout(activeUpdateTimeout);
+    activeUpdateTimeout = setTimeout(() => {
+      const scrollY = window.pageYOffset;
+      const offset = isMobile ? 100 : 150;
 
-    sections.forEach((section) => {
-      const sectionHeight = section.offsetHeight;
-      const sectionTop = section.offsetTop - 150;
-      const sectionId = section.getAttribute("id");
-      const link = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+      sections.forEach((section) => {
+        const sectionHeight = section.offsetHeight;
+        const sectionTop = section.offsetTop - offset;
+        const sectionId = section.getAttribute("id");
+        const link = document.querySelector(`.nav-link[href="#${sectionId}"]`);
 
-      if (link) {
-        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-          navLinks.forEach((l) => l.classList.remove("active"));
-          link.classList.add("active");
+        if (link) {
+          if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+            navLinks.forEach((l) => l.classList.remove("active"));
+            link.classList.add("active");
+          }
         }
-      }
-    });
+      });
+    }, 100);
   }
 
-  // ==================== SMOOTH SCROLL ====================
+  // ==================== SMOOTH SCROLL - MOBILE OPTIMIZED ====================
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
       const href = this.getAttribute("href");
-
       if (href === "#" || href === "#!") return;
 
       e.preventDefault();
-
       const target = document.querySelector(href);
+
       if (target) {
-        const headerOffset = header ? header.offsetHeight + 20 : 100;
+        const headerOffset = header
+          ? header.offsetHeight + (isMobile ? 10 : 20)
+          : isMobile
+          ? 80
+          : 100;
         const elementPosition = target.getBoundingClientRect().top;
         const offsetPosition =
           elementPosition + window.pageYOffset - headerOffset;
 
-        window.scrollTo({
+        // Use different scroll behavior for mobile
+        const scrollOptions = {
           top: offsetPosition,
-          behavior: "smooth",
-        });
+          behavior: isMobile ? "auto" : "smooth", // Instant scroll on mobile for better performance
+        };
+
+        window.scrollTo(scrollOptions);
       }
     });
   });
@@ -425,8 +271,20 @@ document.addEventListener("DOMContentLoaded", function () {
       if (targetContent) {
         targetContent.classList.add("active");
       }
+
+      // Announce change for accessibility
+      announceTabChange(targetTab);
     });
   });
+
+  function announceTabChange(tabName) {
+    const announcement = document.createElement("div");
+    announcement.setAttribute("aria-live", "polite");
+    announcement.className = "sr-only";
+    announcement.textContent = `${tabName} tab selected`;
+    document.body.appendChild(announcement);
+    setTimeout(() => document.body.removeChild(announcement), 1000);
+  }
 
   // ==================== FAQ ACCORDION ====================
   const faqQuestions = document.querySelectorAll(".faq-question");
@@ -436,68 +294,391 @@ document.addEventListener("DOMContentLoaded", function () {
       const faqItem = this.parentElement;
       const isActive = faqItem.classList.contains("active");
 
-      // Close all FAQ items
-      document.querySelectorAll(".faq-item").forEach((item) => {
-        item.classList.remove("active");
+      // Close all FAQ items with animation
+      document.querySelectorAll(".faq-item.active").forEach((item) => {
+        if (item !== faqItem) {
+          item.classList.remove("active");
+        }
       });
 
-      // Open clicked item if it wasn't active
+      // Toggle clicked item
       if (!isActive) {
         faqItem.classList.add("active");
+
+        // Scroll into view on mobile
+        if (isMobile) {
+          setTimeout(() => {
+            faqItem.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+            });
+          }, 300);
+        }
+      } else {
+        faqItem.classList.remove("active");
+      }
+
+      // Update ARIA attributes for accessibility
+      const answer = faqItem.querySelector(".faq-answer");
+      const isNowActive = faqItem.classList.contains("active");
+      this.setAttribute("aria-expanded", isNowActive);
+      if (answer) {
+        answer.setAttribute("aria-hidden", !isNowActive);
       }
     });
+
+    // Set initial ARIA attributes
+    question.setAttribute("aria-expanded", "false");
+    const answer = question.parentElement.querySelector(".faq-answer");
+    if (answer) {
+      answer.setAttribute("aria-hidden", "true");
+    }
   });
 
   // ==================== SCROLL TO TOP BUTTON ====================
   if (scrollTopBtn) {
     scrollTopBtn.addEventListener("click", function () {
-      window.scrollTo({
+      // Different scroll behavior for mobile
+      const scrollOptions = {
         top: 0,
-        behavior: "smooth",
-      });
+        behavior: isMobile ? "auto" : "smooth",
+      };
+      window.scrollTo(scrollOptions);
     });
   }
 
-  // ==================== RESIZE HANDLER ====================
+  // ==================== ENHANCED TESTIMONIALS CAROUSEL ====================
+  const testimonialsTrack = document.getElementById("testimonialsTrack");
+  const testimonialCards = document.querySelectorAll(
+    ".testimonial-card-modern"
+  );
+  const prevControl = document.querySelector(".prev-control");
+  const nextControl = document.querySelector(".next-control");
+  const progressDots = document.querySelectorAll(".progress-dot");
+  const carouselModern = document.querySelector(
+    ".testimonials-carousel-modern"
+  );
+
+  if (testimonialCards.length > 0 && testimonialsTrack) {
+    let currentIndex = 0;
+    let autoplayInterval;
+    let isAutoplayPaused = true;
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    // Get cards per view based on screen size
+    function getCardsPerView() {
+      const width = window.innerWidth;
+      if (width >= 1200) return 3;
+      if (width >= 768) return 2;
+      return 1;
+    }
+
+    // Calculate max index
+    function getMaxIndex() {
+      const cardsPerView = getCardsPerView();
+      return Math.max(0, testimonialCards.length - cardsPerView);
+    }
+
+    // Update carousel position
+    function updateCarousel(smooth = true) {
+      const cardWidth = testimonialCards[0].offsetWidth;
+      const gap = isMobile ? 20 : 25; // Reduced gap for mobile
+      const offset = currentIndex * (cardWidth + gap);
+
+      testimonialsTrack.style.transition = smooth
+        ? "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)" // Faster transition
+        : "none";
+      testimonialsTrack.style.transform = `translateX(-${offset}px)`;
+
+      // Update dots
+      progressDots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentIndex);
+      });
+    }
+
+    // Navigate to specific index
+    function goToIndex(index) {
+      const maxIndex = getMaxIndex();
+      currentIndex = Math.max(0, Math.min(index, maxIndex));
+      updateCarousel();
+    }
+
+    // Next slide
+    function nextSlide() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      updateCarousel();
+    }
+
+    // Previous slide
+    function prevSlide() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = maxIndex;
+      }
+      updateCarousel();
+    }
+
+    // Autoplay functions - disabled on mobile for performance
+    function startAutoplay() {
+      if (!isAutoplayPaused && !isMobile) {
+        autoplayInterval = setInterval(nextSlide, 4000);
+      }
+    }
+
+    function stopAutoplay() {
+      clearInterval(autoplayInterval);
+    }
+
+    function resetAutoplay() {
+      stopAutoplay();
+      startAutoplay();
+    }
+
+    // Event listeners for controls
+    if (prevControl) {
+      prevControl.addEventListener("click", () => {
+        prevSlide();
+        resetAutoplay();
+      });
+    }
+
+    if (nextControl) {
+      nextControl.addEventListener("click", () => {
+        nextSlide();
+        resetAutoplay();
+      });
+    }
+
+    // Event listeners for progress dots
+    progressDots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        const index = parseInt(dot.getAttribute("data-index"));
+        goToIndex(index);
+        resetAutoplay();
+      });
+    });
+
+    // Hover to enable autoplay (desktop only)
+    if (carouselModern && !isMobile) {
+      carouselModern.addEventListener("mouseenter", () => {
+        isAutoplayPaused = false;
+        startAutoplay();
+      });
+
+      carouselModern.addEventListener("mouseleave", () => {
+        isAutoplayPaused = true;
+        stopAutoplay();
+      });
+    }
+
+    // Enhanced touch/swipe support
+    if (testimonialsTrack) {
+      testimonialsTrack.addEventListener(
+        "touchstart",
+        (e) => {
+          startX = e.touches[0].clientX;
+          isDragging = true;
+          stopAutoplay();
+        },
+        { passive: true }
+      );
+
+      testimonialsTrack.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!isDragging) return;
+          currentX = e.touches[0].clientX;
+        },
+        { passive: true }
+      );
+
+      testimonialsTrack.addEventListener("touchend", () => {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const diff = startX - currentX;
+        const threshold = isMobile ? 30 : 50; // Lower threshold for mobile
+
+        if (Math.abs(diff) > threshold) {
+          if (diff > 0) {
+            nextSlide();
+          } else {
+            prevSlide();
+          }
+        }
+
+        resetAutoplay();
+      });
+    }
+
+    // Mouse drag support (desktop)
+    let mouseStartX = 0;
+    let mouseCurrentX = 0;
+    let isMouseDragging = false;
+
+    if (!isMobile) {
+      testimonialsTrack.addEventListener("mousedown", (e) => {
+        mouseStartX = e.clientX;
+        isMouseDragging = true;
+        testimonialsTrack.style.cursor = "grabbing";
+        stopAutoplay();
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isMouseDragging) return;
+        mouseCurrentX = e.clientX;
+      });
+
+      document.addEventListener("mouseup", () => {
+        if (!isMouseDragging) return;
+        isMouseDragging = false;
+        testimonialsTrack.style.cursor = "grab";
+
+        const diff = mouseStartX - mouseCurrentX;
+        const threshold = 50;
+
+        if (Math.abs(diff) > threshold) {
+          if (diff > 0) {
+            nextSlide();
+          } else {
+            prevSlide();
+          }
+        }
+
+        resetAutoplay();
+      });
+    }
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        prevSlide();
+        resetAutoplay();
+      } else if (e.key === "ArrowRight") {
+        nextSlide();
+        resetAutoplay();
+      }
+    });
+
+    // Window resize handler
+    let resizeTimeout;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updateDeviceType(); // Update device type
+        const maxIndex = getMaxIndex();
+        if (currentIndex > maxIndex) {
+          currentIndex = maxIndex;
+        }
+        updateCarousel(false);
+      }, 200);
+    });
+
+    // Initialize
+    updateCarousel(false);
+    progressDots[0]?.classList.add("active");
+
+    // Set cursor style (desktop only)
+    if (!isMobile) {
+      testimonialsTrack.style.cursor = "grab";
+    }
+  }
+
+  // ==================== RESIZE HANDLER WITH DEBOUNCING ====================
   let resizeTimer;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
+      updateDeviceType();
+
       // Close mobile menu on desktop resize
       if (window.innerWidth > 992) {
         closeMenu();
       }
+
+      // Reinitialize components that depend on screen size
+      if (heroSwiper) {
+        heroSwiper.update();
+      }
     }, 250);
   });
 
-  // ==================== ESCAPE KEY HANDLER ====================
+  // ==================== KEYBOARD NAVIGATION ENHANCEMENT ====================
   document.addEventListener("keydown", function (e) {
+    // Close mobile menu on escape
     if (e.key === "Escape") {
       if (navMenu.classList.contains("active")) {
         closeMenu();
       }
     }
-  });
 
-  // ==================== PREVENT SCROLL JUMP ON PAGE LOAD ====================
-  window.addEventListener("load", function () {
-    if (window.location.hash) {
-      setTimeout(function () {
-        const target = document.querySelector(window.location.hash);
-        if (target) {
-          const headerOffset = header ? header.offsetHeight + 20 : 100;
-          const elementPosition = target.getBoundingClientRect().top;
-          const offsetPosition =
-            elementPosition + window.pageYOffset - headerOffset;
+    // Skip to main content (accessibility)
+    if (e.key === "Tab" && e.shiftKey === false) {
+      const focusableElements = document.querySelectorAll(
+        'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      );
 
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth",
-          });
-        }
-      }, 100);
+      // Add focus ring for keyboard users
+      focusableElements.forEach((el) => {
+        el.addEventListener("focus", () => {
+          document.body.classList.add("keyboard-navigation");
+        });
+      });
     }
   });
+
+  // Remove keyboard navigation class on mouse use
+  document.addEventListener("mousedown", () => {
+    document.body.classList.remove("keyboard-navigation");
+  });
+
+  // ==================== INTERSECTION OBSERVER FOR ANIMATIONS ====================
+  if ("IntersectionObserver" in window) {
+    const observerOptions = {
+      threshold: isMobile ? 0.05 : 0.1, // Lower threshold for mobile
+      rootMargin: isMobile ? "0px 0px -30px 0px" : "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+
+          // Remove observer after animation to improve performance
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Add animation to elements with reduced motion consideration
+    const animateElements = document.querySelectorAll(
+      ".service-card, .pricing-card, .contact-card, .about-content, .stat-box"
+    );
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    animateElements.forEach((el) => {
+      if (!prefersReducedMotion) {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(20px)"; // Reduced from 30px
+        el.style.transition = "all 0.4s ease"; // Faster transition
+      }
+      observer.observe(el);
+    });
+  }
 
   // ==================== LAZY LOADING IMAGES ====================
   if ("IntersectionObserver" in window) {
@@ -508,6 +689,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (img.dataset.src) {
             img.src = img.dataset.src;
             img.removeAttribute("data-src");
+            img.classList.add("loaded");
           }
           observer.unobserve(img);
         }
@@ -519,47 +701,27 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ==================== ANIMATION ON SCROLL (Simple) ====================
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = "1";
-        entry.target.style.transform = "translateY(0)";
-      }
-    });
-  }, observerOptions);
-
-  // Add animation to elements
-  const animateElements = document.querySelectorAll(
-    ".service-card, .pricing-card, .contact-card, .about-content, .stat-box"
-  );
-
-  animateElements.forEach((el) => {
-    el.style.opacity = "0";
-    el.style.transform = "translateY(30px)";
-    el.style.transition = "all 0.6s ease";
-    observer.observe(el);
-  });
-
-  // ==================== FORM VALIDATION (if needed) ====================
+  // ==================== FORM VALIDATION ENHANCEMENT ====================
   const forms = document.querySelectorAll("form");
   forms.forEach((form) => {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Add your form submission logic here
       console.log("Form submitted");
 
-      // Example: Show success message
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) {
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = "✓ Jo'natildi!";
+        const currentLang =
+          window.ActiveCargoLanguage?.getCurrentLanguage() || "uz";
+
+        const successMessages = {
+          uz: "✓ Jo'natildi!",
+          ru: "✓ Отправлено!",
+          en: "✓ Sent!",
+        };
+
+        submitBtn.textContent = successMessages[currentLang];
         submitBtn.disabled = true;
 
         setTimeout(() => {
@@ -570,32 +732,82 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // ==================== PRELOADER (Optional) ====================
-  const preloader = document.querySelector(".preloader");
-  if (preloader) {
-    window.addEventListener("load", function () {
-      preloader.style.opacity = "0";
-      setTimeout(() => {
-        preloader.style.display = "none";
-      }, 300);
+  // ==================== NOTIFICATION SYSTEM ENHANCEMENT ====================
+  function showNotification(message, type = "info", duration = 3000) {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll(".notification");
+    existingNotifications.forEach((notification) => {
+      notification.remove();
     });
+
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+      <i class="fas fa-${
+        type === "success" ? "check-circle" : "info-circle"
+      }"></i>
+      <span>${message}</span>
+    `;
+
+    notification.style.cssText = `
+      position: fixed;
+      top: ${isMobile ? "80px" : "100px"};
+      right: ${isMobile ? "15px" : "30px"};
+      padding: ${isMobile ? "12px 20px" : "15px 25px"};
+      background: ${type === "success" ? "#059669" : "#dc2626"};
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      z-index: 10000;
+      animation: slideInRight 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: ${isMobile ? "14px" : "15px"};
+      font-weight: 600;
+      max-width: ${isMobile ? "calc(100vw - 30px)" : "350px"};
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.animation = "slideOutRight 0.3s ease";
+      setTimeout(() => {
+        if (notification.parentNode) {
+          document.body.removeChild(notification);
+        }
+      }, 300);
+    }, duration);
   }
 
-  // ==================== DYNAMIC YEAR IN FOOTER ====================
-  const yearElement = document.querySelector(".current-year");
-  if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-  }
+  // ==================== PHONE NUMBER AND EXTERNAL LINK TRACKING ====================
+  const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+  phoneLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      console.log("Phone number clicked:", this.href);
 
-  // ==================== TOOLTIP HANDLER ====================
-  const tooltipElements = document.querySelectorAll("[data-tooltip]");
-  tooltipElements.forEach((element) => {
-    element.addEventListener("mouseenter", function () {
-      // Tooltip is handled by CSS
+      // Show notification on mobile
+      if (isMobile) {
+        const currentLang =
+          window.ActiveCargoLanguage?.getCurrentLanguage() || "uz";
+        const messages = {
+          uz: "Telefon raqami ochilmoqda...",
+          ru: "Открытие номера телефона...",
+          en: "Opening phone number...",
+        };
+        showNotification(messages[currentLang], "info", 2000);
+      }
     });
   });
 
-  // ==================== COPY TO CLIPBOARD ====================
+  const externalLinks = document.querySelectorAll('a[target="_blank"]');
+  externalLinks.forEach((link) => {
+    link.addEventListener("click", function () {
+      console.log("External link clicked:", this.href);
+    });
+  });
+
+  // ==================== COPY TO CLIPBOARD FUNCTIONALITY ====================
   const copyButtons = document.querySelectorAll("[data-copy]");
   copyButtons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -603,7 +815,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (navigator.clipboard) {
         navigator.clipboard.writeText(textToCopy).then(() => {
-          showNotification("Nusxalandi!", "success");
+          const currentLang =
+            window.ActiveCargoLanguage?.getCurrentLanguage() || "uz";
+          const messages = {
+            uz: "Nusxalandi!",
+            ru: "Скопировано!",
+            en: "Copied!",
+          };
+          showNotification(messages[currentLang], "success");
         });
       } else {
         // Fallback for older browsers
@@ -613,332 +832,18 @@ document.addEventListener("DOMContentLoaded", function () {
         textArea.select();
         document.execCommand("copy");
         document.body.removeChild(textArea);
-        showNotification("Nusxalandi!", "success");
+
+        const currentLang =
+          window.ActiveCargoLanguage?.getCurrentLanguage() || "uz";
+        const messages = {
+          uz: "Nusxalandi!",
+          ru: "Скопировано!",
+          en: "Copied!",
+        };
+        showNotification(messages[currentLang], "success");
       }
     });
   });
-
-  // ==================== NOTIFICATION SYSTEM ====================
-  function showNotification(message, type = "info") {
-    const notification = document.createElement("div");
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 100px;
-      right: 30px;
-      padding: 15px 25px;
-      background: ${type === "success" ? "#27ae60" : "#e74c3c"};
-      color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      z-index: 10000;
-      animation: slideInRight 0.3s ease;
-    `;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.style.animation = "slideOutRight 0.3s ease";
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, 3000);
-  }
-
-  // ==================== PHONE NUMBER FORMATTING ====================
-  const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
-  phoneLinks.forEach((link) => {
-    link.addEventListener("click", function (e) {
-      // Track phone clicks if needed
-      console.log("Phone number clicked:", this.href);
-    });
-  });
-
-  // ==================== EXTERNAL LINK HANDLER ====================
-  const externalLinks = document.querySelectorAll('a[target="_blank"]');
-  externalLinks.forEach((link) => {
-    link.addEventListener("click", function () {
-      // Track external link clicks if needed
-      console.log("External link clicked:", this.href);
-    });
-  });
-
-  // ==================== SCROLL REVEAL ANIMATION ====================
-  function revealOnScroll() {
-    const reveals = document.querySelectorAll("[data-reveal]");
-
-    reveals.forEach((element) => {
-      const windowHeight = window.innerHeight;
-      const elementTop = element.getBoundingClientRect().top;
-      const elementVisible = 150;
-
-      if (elementTop < windowHeight - elementVisible) {
-        element.classList.add("revealed");
-      }
-    });
-  }
-
-  window.addEventListener("scroll", revealOnScroll);
-  revealOnScroll(); // Initial check
-
-  // ==================== COUNTER ANIMATION ====================
-  function animateCounter(element) {
-    const target = parseInt(element.getAttribute("data-count"));
-    const duration = 2000; // 2 seconds
-    const increment = target / (duration / 16); // 60fps
-    let current = 0;
-
-    const updateCounter = () => {
-      current += increment;
-      if (current < target) {
-        element.textContent = Math.floor(current).toLocaleString();
-        requestAnimationFrame(updateCounter);
-      } else {
-        element.textContent = target.toLocaleString();
-      }
-    };
-
-    updateCounter();
-  }
-
-  // Observe counter elements
-  const counterObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (
-          entry.isIntersecting &&
-          !entry.target.classList.contains("counted")
-        ) {
-          animateCounter(entry.target);
-          entry.target.classList.add("counted");
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-
-  document.querySelectorAll("[data-count]").forEach((counter) => {
-    counterObserver.observe(counter);
-  });
-
-  // ==================== PARALLAX EFFECT ====================
-  const parallaxElements = document.querySelectorAll("[data-parallax]");
-
-  if (parallaxElements.length > 0 && window.innerWidth > 768) {
-    window.addEventListener("scroll", () => {
-      const scrolled = window.pageYOffset;
-
-      parallaxElements.forEach((element) => {
-        const speed = element.getAttribute("data-parallax") || 0.5;
-        const yPos = -(scrolled * speed);
-        element.style.transform = `translateY(${yPos}px)`;
-      });
-    });
-  }
-
-  // ==================== STICKY SIDEBAR (if needed) ====================
-  function initStickySidebar() {
-    const sidebar = document.querySelector(".sticky-sidebar");
-    if (!sidebar) return;
-
-    const sidebarTop = sidebar.offsetTop;
-    const sidebarHeight = sidebar.offsetHeight;
-
-    window.addEventListener("scroll", () => {
-      const scrollTop = window.pageYOffset;
-
-      if (scrollTop > sidebarTop - 100) {
-        sidebar.classList.add("is-sticky");
-      } else {
-        sidebar.classList.remove("is-sticky");
-      }
-    });
-  }
-
-  initStickySidebar();
-
-  // ==================== BACK BUTTON HANDLER ====================
-  window.addEventListener("popstate", function (event) {
-    // Handle browser back button if needed
-    console.log("Back button pressed");
-  });
-
-  // ==================== DETECT MOBILE DEVICE ====================
-  function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-  }
-
-  if (isMobileDevice()) {
-    document.body.classList.add("is-mobile");
-  }
-
-  // ==================== DETECT TOUCH DEVICE ====================
-  function isTouchDevice() {
-    return (
-      "ontouchstart" in window ||
-      navigator.maxTouchPoints > 0 ||
-      navigator.msMaxTouchPoints > 0
-    );
-  }
-
-  if (isTouchDevice()) {
-    document.body.classList.add("is-touch");
-  }
-
-  // ==================== PERFORMANCE OPTIMIZATION ====================
-  // Debounce function for scroll and resize events
-  function debounce(func, wait = 10) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-  // Throttle function for frequent events
-  function throttle(func, limit = 100) {
-    let inThrottle;
-    return function executedFunction(...args) {
-      if (!inThrottle) {
-        func.apply(this, args);
-        inThrottle = true;
-        setTimeout(() => (inThrottle = false), limit);
-      }
-    };
-  }
-
-  // Apply throttle to scroll events
-  const throttledScroll = throttle(() => {
-    updateScrollProgress();
-    updateActiveLink();
-  }, 100);
-
-  window.addEventListener("scroll", throttledScroll);
-
-  // ==================== SERVICE WORKER REGISTRATION ====================
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      // Uncomment to enable service worker
-      // navigator.serviceWorker
-      //   .register("/sw.js")
-      //   .then((registration) => {
-      //     console.log("Service Worker registered:", registration);
-      //   })
-      //   .catch((error) => {
-      //     console.log("Service Worker registration failed:", error);
-      //   });
-    });
-  }
-
-  // ==================== CLICK TRACKING ====================
-  function trackClick(category, action, label) {
-    // Integrate with your analytics service
-    console.log("Click tracked:", category, action, label);
-
-    // Example for Google Analytics
-    if (typeof gtag !== "undefined") {
-      gtag("event", action, {
-        event_category: category,
-        event_label: label,
-      });
-    }
-  }
-
-  // Track button clicks
-  document.querySelectorAll(".btn").forEach((button) => {
-    button.addEventListener("click", function () {
-      const category = "Button";
-      const action = "Click";
-      const label = this.textContent.trim();
-      trackClick(category, action, label);
-    });
-  });
-
-  // ==================== NETWORK STATUS ====================
-  window.addEventListener("online", () => {
-    showNotification("Internet aloqasi tiklandi", "success");
-  });
-
-  window.addEventListener("offline", () => {
-    showNotification("Internet aloqasi uzildi", "error");
-  });
-
-  // ==================== PAGE VISIBILITY ====================
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      // Page is hidden
-      console.log("Page hidden");
-    } else {
-      // Page is visible
-      console.log("Page visible");
-    }
-  });
-
-  // ==================== PREVENT CONTEXT MENU (Optional) ====================
-  // Uncomment to disable right-click
-  // document.addEventListener("contextmenu", (e) => {
-  //   e.preventDefault();
-  //   return false;
-  // });
-
-  // ==================== COPY PROTECTION (Optional) ====================
-  // Uncomment to prevent text selection
-  // document.addEventListener("selectstart", (e) => {
-  //   e.preventDefault();
-  //   return false;
-  // });
-
-  // ==================== INITIALIZE AOS (Animate On Scroll) ====================
-  // If you're using AOS library, initialize it here
-  // if (typeof AOS !== "undefined") {
-  //   AOS.init({
-  //     duration: 800,
-  //     easing: "ease-in-out",
-  //     once: true,
-  //     mirror: false,
-  //   });
-  // }
-
-  // ==================== HEADER ANIMATION ON LOAD ====================
-  setTimeout(() => {
-    if (header) {
-      header.style.transform = "translateY(0)";
-      header.style.opacity = "1";
-    }
-  }, 100);
-
-  // ==================== SMOOTH SCROLL POLYFILL ====================
-  // For older browsers that don't support smooth scrolling
-  if (!("scrollBehavior" in document.documentElement.style)) {
-    const smoothScrollPolyfill = document.createElement("script");
-    smoothScrollPolyfill.src =
-      "https://cdn.jsdelivr.net/npm/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js";
-    document.head.appendChild(smoothScrollPolyfill);
-  }
-
-  // ==================== CONSOLE STYLING ====================
-  const consoleStyles = {
-    title:
-      "background: linear-gradient(135deg, #2c3e50 0%, #e74c3c 100%); color: white; font-size: 20px; padding: 10px 20px; font-weight: bold;",
-    subtitle:
-      "background: #e74c3c; color: white; font-size: 14px; padding: 5px 10px;",
-    info: "color: #2c3e50; font-size: 12px; padding: 5px;",
-  };
-
-  console.log("%c Active Cargo ", consoleStyles.title);
-  console.log("%c Developed by YUMA SOFT ", consoleStyles.subtitle);
-  console.log("%c Website loaded successfully! ", consoleStyles.info);
-  console.log(
-    "%c Version: 1.0.0 | " + new Date().toLocaleDateString(),
-    consoleStyles.info
-  );
 
   // ==================== PERFORMANCE MONITORING ====================
   if (window.performance && window.performance.timing) {
@@ -948,8 +853,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const loadTime = timing.loadEventEnd - timing.navigationStart;
         console.log(
           `%c Page Load Time: ${(loadTime / 1000).toFixed(2)}s`,
-          "color: #27ae60; font-weight: bold;"
+          "color: #059669; font-weight: bold;"
         );
+
+        // Log performance warning for mobile if load time is high
+        if (isMobile && loadTime > 5000) {
+          console.warn("Slow load time detected on mobile device");
+        }
       }, 0);
     });
   }
@@ -957,93 +867,94 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==================== ERROR HANDLING ====================
   window.addEventListener("error", (event) => {
     console.error("Error occurred:", event.error);
-    // Send error to logging service if needed
+
+    // Don't show error notifications to users, just log them
+    if (window.location.hostname !== "localhost") {
+      // Send to error logging service in production
+    }
   });
 
-  // ==================== UNHANDLED PROMISE REJECTIONS ====================
   window.addEventListener("unhandledrejection", (event) => {
     console.error("Unhandled promise rejection:", event.reason);
-    // Send error to logging service if needed
   });
 
-  // ==================== BROWSER COMPATIBILITY CHECK ====================
-  function checkBrowserCompatibility() {
-    const isIE = /MSIE|Trident/.test(navigator.userAgent);
+  // ==================== NETWORK STATUS MONITORING ====================
+  window.addEventListener("online", () => {
+    const currentLang =
+      window.ActiveCargoLanguage?.getCurrentLanguage() || "uz";
+    const messages = {
+      uz: "Internet aloqasi tiklandi",
+      ru: "Подключение к интернету восстановлено",
+      en: "Internet connection restored",
+    };
+    showNotification(messages[currentLang], "success");
+  });
 
-    if (isIE) {
-      const banner = document.createElement("div");
-      banner.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: #e74c3c;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        z-index: 99999;
-        font-size: 14px;
-      `;
-      banner.textContent =
-        "Siz eski brauzerdan foydalanyapsiz. Yaxshi tajriba uchun zamonaviy brauzerga o'ting.";
-      document.body.insertBefore(banner, document.body.firstChild);
-    }
-  }
-
-  checkBrowserCompatibility();
-
-  // ==================== FEATURE DETECTION ====================
-  const features = {
-    flexbox: CSS.supports("display", "flex"),
-    grid: CSS.supports("display", "grid"),
-    customProperties: CSS.supports("--custom", "property"),
-    objectFit: CSS.supports("object-fit", "cover"),
-  };
-
-  console.log("Browser Features:", features);
+  window.addEventListener("offline", () => {
+    const currentLang =
+      window.ActiveCargoLanguage?.getCurrentLanguage() || "uz";
+    const messages = {
+      uz: "Internet aloqasi uzildi",
+      ru: "Соединение с интернетом потеряно",
+      en: "Internet connection lost",
+    };
+    showNotification(messages[currentLang], "error", 5000);
+  });
 
   // ==================== INITIALIZE ALL FUNCTIONS ====================
   function init() {
     console.log("Initializing Active Cargo website...");
 
+    // Update device type
+    updateDeviceType();
+
     // Update initial states
-    updateScrollProgress();
-    updateActiveLink();
+    updateScrollEffects();
 
     // Set initial animations
     document.body.classList.add("loaded");
 
+    // Initialize language system integration
+    document.addEventListener("languageChanged", function (e) {
+      console.log(`Language changed to: ${e.detail.language}`);
+
+      // Update any dynamic content
+      updateDynamicContent(e.detail.language);
+    });
+
     console.log("✓ Active Cargo website initialized successfully!");
+  }
+
+  function updateDynamicContent(lang) {
+    // Update date formats if any
+    const dateElements = document.querySelectorAll("[data-date]");
+    dateElements.forEach((element) => {
+      const dateValue = element.getAttribute("data-date");
+      if (dateValue) {
+        const formattedDate = formatDate(dateValue, lang);
+        element.textContent = formattedDate;
+      }
+    });
+  }
+
+  function formatDate(dateString, lang) {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+
+    switch (lang) {
+      case "ru":
+        return date.toLocaleDateString("ru-RU", options);
+      case "en":
+        return date.toLocaleDateString("en-US", options);
+      default:
+        return date.toLocaleDateString("uz-UZ", options);
+    }
   }
 
   // Run initialization
   init();
 
-  // ==================== CUSTOM EVENTS ====================
-  // Create custom event for when page is fully ready
-  const pageReadyEvent = new CustomEvent("pageReady", {
-    detail: {
-      timestamp: Date.now(),
-      message: "Page is fully loaded and ready",
-    },
-  });
-
-  window.dispatchEvent(pageReadyEvent);
-
-  // Listen for custom events
-  window.addEventListener("pageReady", (e) => {
-    console.log("Page Ready Event:", e.detail);
-  });
-
-  // ==================== CLEANUP ====================
-  // Clean up event listeners when page is unloaded
-  window.addEventListener("beforeunload", () => {
-    // Perform cleanup tasks
-    console.log("Cleaning up...");
-  });
-
   // ==================== EXPOSE PUBLIC API ====================
-  // Make certain functions available globally if needed
   window.ActiveCargo = {
     showNotification: showNotification,
     closeMenu: closeMenu,
@@ -1051,40 +962,85 @@ document.addEventListener("DOMContentLoaded", function () {
     goToSection: function (sectionId) {
       const section = document.getElementById(sectionId);
       if (section) {
-        const headerOffset = header ? header.offsetHeight + 20 : 100;
+        const headerOffset = header
+          ? header.offsetHeight + (isMobile ? 10 : 20)
+          : isMobile
+          ? 80
+          : 100;
         const elementPosition = section.getBoundingClientRect().top;
         const offsetPosition =
           elementPosition + window.pageYOffset - headerOffset;
 
-        window.scrollTo({
+        const scrollOptions = {
           top: offsetPosition,
-          behavior: "smooth",
-        });
+          behavior: isMobile ? "auto" : "smooth",
+        };
+
+        window.scrollTo(scrollOptions);
       }
     },
-    version: "1.0.0",
+    updateDeviceType: updateDeviceType,
+    isMobile: () => isMobile,
+    isTablet: () => isTablet,
+    version: "2.0.0",
     author: "YUMA SOFT",
   };
 
   console.log(
-    "%c ActiveCargo API is ready! Access it via window.ActiveCargo",
-    "color: #27ae60; font-weight: bold; font-size: 12px;"
+    "%c ActiveCargo Enhanced API is ready! Access it via window.ActiveCargo",
+    "color: #059669; font-weight: bold; font-size: 12px;"
   );
 }); // End DOMContentLoaded
 
-// ==================== OUTSIDE DOMContentLoaded ====================
-
-// Page Load Performance
+// ==================== PAGE LOAD PERFORMANCE ====================
 window.addEventListener("load", function () {
-  // Remove any loading states
   document.body.classList.remove("loading");
   document.body.classList.add("loaded");
 
-  // Log load complete
   console.log(
     "%c ✓ All resources loaded!",
-    "color: #27ae60; font-weight: bold;"
+    "color: #059669; font-weight: bold;"
   );
 });
 
-// ==================== END OF SCRIPT ====================
+// ==================== CSS ANIMATIONS FOR NOTIFICATIONS ====================
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  .keyboard-navigation *:focus {
+    outline: 3px solid #dc2626 !important;
+    outline-offset: 2px !important;
+  }
+
+  .loaded img {
+    transition: opacity 0.3s ease;
+  }
+
+  .loaded img.loaded {
+    opacity: 1;
+  }
+`;
+document.head.appendChild(style);
+
+// ==================== END OF ENHANCED SCRIPT ====================
